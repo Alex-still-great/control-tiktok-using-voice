@@ -1,0 +1,6 @@
+# Abaikan folder konfigurasi Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo

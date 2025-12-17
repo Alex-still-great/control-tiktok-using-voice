@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="User interface/User interface.csproj" />
+  <Project Path="Voice recognition/Voice recognition.csproj" Id="c4a6b0b0-7189-42e8-a54f-874cb1970e20" />
+</Solution>

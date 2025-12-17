@@ -1,0 +1,20 @@
+﻿<Window x:Class="User_interface.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:User_interface"
+        mc:Ignorable="d"
+        Title="Control Tiktok Using Voice" Height="450" Width="800">
+    <Window.Background>#2c2d25</Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="16*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Background="Black" Margin="0, 0, 0, 0" ></StackPanel>
+        <TextBlock Text=" Control Tiktok Using Voice" Grid.Column="1" Foreground="White" FontSize="22" FontWeight="Bold" Margin="177,25,-177,-26"  ></TextBlock>
+        <Button Grid.Column="1" Content="Start listening" Width="85" Height="25" Margin="59,82,530,327" Click="runcode_Click"> </Button>
+        <Button Grid.Column="0" Content="Settings" Width="85" Height="25" Margin="21,25,20,384" Click="settings" ></Button>
+    </Grid>
+</Window>
