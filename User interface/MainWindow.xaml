@@ -12,9 +12,11 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="16*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Background="Black" Margin="0, 0, 0, 0" ></StackPanel>
+        <StackPanel Grid.Column="0" Background="Black" Margin="0, 0, 0, 0" Panel.ZIndex="0"></StackPanel>
         <TextBlock Text=" Control Tiktok Using Voice" Grid.Column="1" Foreground="White" FontSize="22" FontWeight="Bold" Margin="177,25,-177,-26"  ></TextBlock>
-        <Button Grid.Column="1" Content="Start listening" Width="85" Height="25" Margin="59,82,530,327" Click="runcode_Click"> </Button>
+        <Button Grid.Column="0" Content="Start listening" Width="85" Height="25" Margin="21,93,20,316" Click="runcode_Click" Panel.ZIndex="1"/>
         <Button Grid.Column="0" Content="Settings" Width="85" Height="25" Margin="21,25,20,384" Click="settings" ></Button>
+        <TextBlock Text="Logs:" Margin="0,10,0,5" FontWeight="Bold" Grid.Column="1"/>
+        <ListBox x:Name="ListLogs" Height="100" Background="#F0F0F0" Grid.Column="1"/>
     </Grid>
 </Window>

@@ -3,6 +3,7 @@ using NAudio.Wave;
 using System;
 using System.Text.Json;
 using System.Runtime.InteropServices; // Diperlukan untuk P/Invoke (simulasi tombol)
+using System.Threading.Tasks;
 
 // --- FUNGSI UNTUK SIMULASI KEYBOARD ---
 public class Win32
@@ -34,94 +35,92 @@ public class Win32
 // ----------------------------------------
 
 
-public class SpeechRecognizer
+public class SpeechService
 {
-    public static void Main(string[] args)
+    private WaveInEvent? waveIn;
+    private VoskRecognizer? merekam;
+    private Model? folder_vosk;
+
+    public void StartListening()
     {
-        // Pastikan model sudah diinstal di lokasi ini
-        Model folder_vosk = new Model("D:\\vosk-model-en-us-0.22");
+        // 1. Inisialisasi Model
+        folder_vosk = new Model(@"D:\vosk-model-en-us-0.22");
+        merekam = new VoskRecognizer(folder_vosk, 16000.0f);
 
-        var merekam = new VoskRecognizer(folder_vosk, 16000.0f);
+        waveIn = new WaveInEvent();
+        waveIn.DeviceNumber = 0;
+        waveIn.WaveFormat = new WaveFormat(16000, 1);
+        waveIn.BufferMilliseconds = 500;
 
-        Console.WriteLine("Memulai inisialisasi perekaman...");
-
-        // Peringatan penting untuk fungsi simulasi keyboard
-        //Console.ForegroundColor = ConsoleColor.Yellow;
-        //Console.WriteLine("PERINGATAN: Program ini akan menyimulasikan penekanan tombol L saat Anda mengucapkan 'like'.");
-        //Console.WriteLine("Pastikan Anda berada di aplikasi yang ingin Anda kontrol (misal: Notepad).");
-        //Console.ResetColor();
-
-        using (var waveIn = new WaveInEvent())
+        waveIn.DataAvailable += (sender, e) =>
         {
-            waveIn.DeviceNumber = 0;
-            waveIn.WaveFormat = new WaveFormat(16000, 1);
-            waveIn.BufferMilliseconds = 1000;
-
-            waveIn.DataAvailable += (sender, e) =>
+            if (merekam.AcceptWaveform(e.Buffer, e.BytesRecorded))
             {
-                if (merekam.AcceptWaveform(e.Buffer, e.BytesRecorded))
+                string jsonResult = merekam.Result();
+                ProcessResult(jsonResult);
+            }
+            else
+            {
+                // PartialResult() dipanggil saat sedang berbicara (Real-time)
+                // Gunakan ini jika ingin respon yang sangat cepat
+                string partialJson = merekam.PartialResult();
+                ProcessPartial(partialJson);
+            }
+        };
+
+        waveIn.StartRecording();
+    }
+
+    public event Action<string>?  OnLogReceived;
+
+    private void ProcessPartial(string jsonResult)
+    {
+        using (JsonDocument document = JsonDocument.Parse(jsonResult))
+        {
+            // Untuk Partial Result, Vosk menggunakan properti "partial"
+            if (document.RootElement.TryGetProperty("partial", out JsonElement partialElement))
+            {
+                string partialText = partialElement.GetString() .Trim().ToLower();
+
+                if (!string.IsNullOrEmpty(partialText))
                 {
-                    string jsonResult = merekam.Result();
-
-                    try
-                    {
-                        using (JsonDocument document = JsonDocument.Parse(jsonResult))
-                        {
-                            if (document.RootElement.TryGetProperty("text", out JsonElement textElement))
-                            {
-                                string recognizedText = textElement.GetString().Trim().ToLower(); // Dibuat lowercase dan trim untuk perbandingan
-
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine($"[HASIL AKHIR]: {recognizedText}");
-                                Console.ResetColor();
-
-                                // --- LOGIKA SIMULASI TOMBOL KEYBOARD ---
-                                if (recognizedText == "like" || recognizedText == "the like" || recognizedText == "light" || recognizedText == "the light")
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Cyan;
-                                    Console.WriteLine(">>> Kata like terdeteksi Menekan tombol L");
-                                    Console.ResetColor();
-
-                                    Win32.SimulateKeyPress(Win32.VK_L);
-                                }
-
-                                else if (recognizedText == "down" || recognizedText == "the down" || recognizedText == "dowd" || recognizedText == "dowded")
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Magenta;
-                                    Console.WriteLine("kata down terdeteksi menekan tombol Arrow bawah");
-                                    Console.ResetColor();
-
-                                    Win32.SimulateKeyPress(Win32.VK_ADOWN);
-                                }
-
-                                else if (recognizedText == "up" )
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.WriteLine("kata up terdeteksi menekan tombol arrow atas");
-                                    Console.ResetColor();
-
-                                    Win32.SimulateKeyPress(Win32.VK_AUP);
-                                }
-                                // ---------------------------------------
-                            }
-                        }
-                    }
-                    catch (JsonException ex)
-                    {
-                        Console.WriteLine($"Error parsing JSON: {ex.Message}");
-                    }
+                    // Kirim ke UI agar user bisa melihat teks yang sedang diproses
+                    //OnLogReceived?.Invoke($"Mendengarkan: {partialText}...");
                 }
-            };
-
-            waveIn.StartRecording();
-            Console.WriteLine("---------------------------------------------");
-            Console.WriteLine("Mulai berbicara. Tekan tombol apa saja untuk berhenti.");
-            Console.WriteLine("---------------------------------------------");
-
-            Console.ReadKey();
-
-            waveIn.StopRecording();
-            Console.WriteLine("\nPerekaman dihentikan.");
+            }
         }
+    }
+    private void ProcessResult(string jsonResult)
+    {
+        using (JsonDocument document = JsonDocument.Parse(jsonResult))
+        {
+            if (document.RootElement.TryGetProperty("text", out JsonElement textElement))
+            {
+                string recognizedText = textElement.GetString().Trim().ToLower();
+
+                if (!string.IsNullOrEmpty(recognizedText) || recognizedText != "the")
+                {
+                    // Kirim teks yang dideteksi ke event log
+                    OnLogReceived?.Invoke($"Terdeteksi: {recognizedText}");
+
+                    // Logika simulasi tombol tetap sama
+                    if (recognizedText == "like" || recognizedText == "the light" || recognizedText == "like like" || recognizedText == "light" || recognizedText == "the like")
+                    {
+                        Win32.SimulateKeyPress(Win32.VK_L);
+                    }
+                    else if (recognizedText == "down" || recognizedText == "dowd" || recognizedText == "the down" || recognizedText == "the dowd")
+                    {
+                        Win32.SimulateKeyPress(Win32.VK_ADOWN); 
+                    }
+                    else if (recognizedText.Contains("up")) Win32.SimulateKeyPress(Win32.VK_AUP);
+                }
+            }
+        }
+    }
+
+    public void StopListening()
+    {
+        waveIn?.StopRecording();
+        waveIn?.Dispose();
     }
 }
