@@ -32,7 +32,7 @@ namespace User_interface
 
             if (!_isListening)
             {
-                btn.IsEnabled = false; // Matikan tombol sementara agar tidak diklik dua kali
+                btn.IsEnabled = false; 
                 btn.Content = "Loading Model...";
 
                 Task.Run(() =>
@@ -41,7 +41,7 @@ namespace User_interface
                     {
                         _speechService.StartListening();
 
-                        // Jika berhasil, update UI melalui Dispatcher
+                       
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             _isListening = true;
@@ -78,13 +78,12 @@ namespace User_interface
 
         private void UpdateLog(string message)
         {
-            // PENTING: Gunakan Dispatcher agar bisa update UI dari thread lain
+            
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 string timeStamp = DateTime.Now.ToString("HH:mm:ss");
-                ListLogs.Items.Insert(0, $"[{timeStamp}] {message}"); // Tambahkan ke paling atas
+                ListLogs.Items.Insert(0, $"[{timeStamp}] {message}");
 
-                // Batasi agar log tidak terlalu panjang (opsional)
                 if (ListLogs.Items.Count > 100) ListLogs.Items.RemoveAt(100);
             }));
         }
