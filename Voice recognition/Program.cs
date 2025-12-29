@@ -14,8 +14,10 @@ public class Win32
     public const byte VK_L = 0x4C;
     public const byte VK_ADOWN = 0x28;
     public const byte VK_AUP = 0x26;
+    public const byte VK_MUTE = 0x4D;
+    public const byte VK_STOP = 0x20;
 
- 
+
     [DllImport("user32.dll", SetLastError = true)]
     public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, IntPtr dwExtraInfo);
 
@@ -97,16 +99,27 @@ public class SpeechService
                    
                     OnLogReceived?.Invoke($"Terdeteksi: {recognizedText}");
 
-                   
+
                     if (recognizedText == "like" || recognizedText == "the light" || recognizedText == "like like" || recognizedText == "light" || recognizedText == "the like")
                     {
                         Win32.SimulateKeyPress(Win32.VK_L);
                     }
                     else if (recognizedText == "down" || recognizedText == "dowd" || recognizedText == "the down" || recognizedText == "the dowd")
                     {
-                        Win32.SimulateKeyPress(Win32.VK_ADOWN); 
+                        Win32.SimulateKeyPress(Win32.VK_ADOWN);
                     }
-                    else if (recognizedText.Contains("up")) Win32.SimulateKeyPress(Win32.VK_AUP);
+                    else if (recognizedText == "up" || recognizedText == "the up" || recognizedText == "the up up" || recognizedText == "the up the up")
+                    {
+                        Win32.SimulateKeyPress(Win32.VK_AUP);
+                    }
+                    else if (recognizedText == "mute" || recognizedText == "the mute" || recognizedText == "mute mute" || recognizedText == "the mute the mute")
+                    {
+                        Win32.SimulateKeyPress(Win32.VK_MUTE);
+                    }
+                    else if (recognizedText == "stop" || recognizedText == "the stop" || recognizedText == "the stop stop" || recognizedText == "the stop the stop")
+                    {
+                        Win32.SimulateKeyPress(Win32.VK_STOP);
+                    }
                 }
             }
         }

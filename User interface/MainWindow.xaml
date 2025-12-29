@@ -8,15 +8,9 @@
         Title="Control Tiktok Using Voice" Height="450" Width="800">
     <Window.Background>#2c2d25</Window.Background>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="16*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Background="Black" Margin="0, 0, 0, 0" Panel.ZIndex="0"></StackPanel>
-        <TextBlock Text=" Control Tiktok Using Voice" Grid.Column="1" Foreground="White" FontSize="22" FontWeight="Bold" Margin="177,25,-177,-26"  ></TextBlock>
-        <Button Grid.Column="0" Content="Start listening" Width="85" Height="25" Margin="21,93,20,316" Click="runcode_Click" Panel.ZIndex="1"/>
-        <Button Grid.Column="0" Content="Settings" Width="85" Height="25" Margin="21,25,20,384" Click="settings" ></Button>
-        <TextBlock Text="Logs:" Margin="0,10,0,5" FontWeight="Bold" Grid.Column="1"/>
+        <StackPanel  Background="Black" Margin="0, 0, 0, 0" Panel.ZIndex="0"></StackPanel>
+        <TextBlock Text=" Control Tiktok Using Voice"  Foreground="White" FontSize="22" FontWeight="Bold" Margin="177,25,-177,-26"  ></TextBlock>
+        <Button  Content="Start listening" Width="85" Height="25" Margin="43,89,672,320" Click="runcode_Click" Panel.ZIndex="1"/>
         <ListBox x:Name="ListLogs" Height="100" Background="#F0F0F0" Grid.Column="1"/>
     </Grid>
 </Window>
