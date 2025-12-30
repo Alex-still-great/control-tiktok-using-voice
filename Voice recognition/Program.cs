@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 public class Win32
-{
+{ // simulasi tombol
     
     public const int KEYEVENTF_KEYUP = 0x0002;
 
@@ -35,7 +35,7 @@ public class Win32
 }
 
 public class SpeechService
-{
+{ // Setting vosk dan naudio
     private WaveInEvent? waveIn;
     private VoskRecognizer? merekam;
     private Model? folder_vosk;
@@ -58,11 +58,11 @@ public class SpeechService
                 string jsonResult = merekam.Result();
                 ProcessResult(jsonResult);
             }
-            else
-            {
-                string partialJson = merekam.PartialResult();
-                ProcessPartial(partialJson);
-            }
+            //else
+            //{
+            //    string partialJson = merekam.PartialResult();
+            //    ProcessPartial(partialJson);
+            //}
         };
 
         waveIn.StartRecording();
@@ -70,22 +70,24 @@ public class SpeechService
 
     public event Action<string>?  OnLogReceived;
 
-    private void ProcessPartial(string jsonResult)
-    {
-        using (JsonDocument document = JsonDocument.Parse(jsonResult))
-        {
+    //private void ProcessPartial(string jsonResult)
+    //{
+    //    using (JsonDocument document = JsonDocument.Parse(jsonResult))
+    //    {
            
-            if (document.RootElement.TryGetProperty("partial", out JsonElement partialElement))
-            {
-                string partialText = partialElement.GetString() .Trim().ToLower();
+    //        if (document.RootElement.TryGetProperty("partial", out JsonElement partialElement))
+    //        {
+    //            string partialText = partialElement.GetString() .Trim().ToLower();
 
-                if (!string.IsNullOrEmpty(partialText))
-                {
-                    //OnLogReceived?.Invoke($"Mendengarkan: {partialText}...");
-                }
-            }
-        }
-    }
+    //            if (!string.IsNullOrEmpty(partialText))
+    //            {
+    //                //OnLogReceived?.Invoke($"Mendengarkan: {partialText}...");
+    //            }
+    //        }
+    //    }
+    //}
+
+    // mengambil teks dari file json dan menyimpan nya dalam variabel
     private void ProcessResult(string jsonResult)
     {
         using (JsonDocument document = JsonDocument.Parse(jsonResult))

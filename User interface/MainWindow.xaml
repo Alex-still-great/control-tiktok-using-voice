@@ -1,7 +1,7 @@
 ﻿<Window x:Class="User_interface.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="VoiTok AI" Height="650" Width="900"
+        Title="Bahlil x sahroni" Height="650" Width="900"
         WindowStartupLocation="CenterScreen"
         Background="#1A1A1A">
 
@@ -42,7 +42,7 @@
                     </StackPanel>
 
                     <Button Style="{StaticResource ModernGradientButton}" Height="100" Margin="0,0,0,30" Click="runcode_Click">
-                        <TextBlock Text="STOP LISTENING" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock x:Name ="tombol" Text="Start Listening" FontSize="18" FontWeight="Bold"/>
                     </Button>
 
                     <TextBlock Text="ACTIVITY LOGS" Foreground="Gray" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>

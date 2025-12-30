@@ -32,8 +32,8 @@ namespace User_interface
 
             if (!_isListening)
             {
-                btn.IsEnabled = false; 
-                btn.Content = "Loading Model...";
+                btn.IsEnabled = false;
+                tombol.Text = "Loading model...";
 
                 Task.Run(() =>
                 {
@@ -45,7 +45,7 @@ namespace User_interface
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
                             _isListening = true;
-                            btn.Content = "Berhenti";
+                            tombol.Text = "Berhenti";
                             btn.IsEnabled = true;
                             UpdateLog("Sistem Siap!");
                         }));
@@ -54,7 +54,7 @@ namespace User_interface
                     {
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            btn.Content = "Mulai Deteksi Suara";
+                            tombol.Text = "Mulai Deteksi Suara";
                             btn.IsEnabled = true;
                             UpdateLog("Error: " + ex.Message);
                         }));
@@ -64,16 +64,11 @@ namespace User_interface
             else
             {
                 _speechService.StopListening();
-                btn.Content = "Mulai Deteksi Suara";
+                tombol.Text = "Mulai Deteksi Suara";
                 _isListening = false;
                 UpdateLog("Sistem Dimatikan.");
             }
         
-        }
-
-        private void settings(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void UpdateLog(string message)
